@@ -45,7 +45,7 @@ exports.getAllSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-  var sauceObject = {};
+  let sauceObject = {};
   if (req.file) {
     sauceObject = {
       ...JSON.parse(req.body.sauce),
