@@ -104,7 +104,7 @@ exports.deleteSauce = (req, res, next) => {
 
 exports.likeDislikeSauces = (req, res, next) => {
   if (req.body.like == 1) {
-    ModelsSauce.updateOne(
+    Sauce.updateOne(
       { _id: req.params.id },
       { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }
     )
@@ -113,7 +113,7 @@ exports.likeDislikeSauces = (req, res, next) => {
   }
 
   if (req.body.like == 0) {
-    ModelsSauce.findOne({ _id: req.params.id })
+    Sauce.findOne({ _id: req.params.id })
       .then((sauce) => {
         if (sauce.usersLiked.includes(req.body.userId)) {
           ModelsSauce.updateOne(
@@ -126,7 +126,7 @@ exports.likeDislikeSauces = (req, res, next) => {
             .catch((error) => res.status(400).json({ error }));
         }
         if (sauce.usersDisliked.includes(req.body.userId)) {
-          ModelsSauce.updateOne(
+          Sauce.updateOne(
             { _id: req.params.id },
             {
               $pull: { usersDisliked: req.body.userId },
@@ -143,7 +143,7 @@ exports.likeDislikeSauces = (req, res, next) => {
   }
 
   if (req.body.like == -1) {
-    ModelsSauce.updateOne(
+    Sauce.updateOne(
       { _id: req.params.id },
       { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } }
     )
