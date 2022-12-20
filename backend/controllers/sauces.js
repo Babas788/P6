@@ -102,121 +102,54 @@ exports.deleteSauce = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-exports.likeDislike = (req, res, next) => {
-  let like = req.body.like;
-  let userId = req.body.userId;
-  let sauceId = req.params.id;
+exports.likeDislikeSauces = (req, res, next) => {
+  if (req.body.like == 1) {
+    ModelsSauce.updateOne(
+      { _id: req.params.id },
+      { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }
+    )
+      .then(() => res.status(200).json({ message: "Sauce liké" }))
+      .catch((error) => res.status(400).json({ error }));
+  }
 
-  if (like === 1) {
-    Sauce.updateOne(
-      {
-        _id: sauceId,
-      },
-      {
-        $push: {
-          usersLiked: userId,
-        },
-        $inc: {
-          likes: +1,
-        },
-      }
-    )
-      .then(() =>
-        res.status(200).json({
-          message: "like bien ajouté",
-        })
-      )
-      .catch((error) =>
-        res.status(400).json({
-          error,
-        })
-      );
-  }
-  if (like === -1) {
-    Sauce.updateOne(
-      {
-        _id: sauceId,
-      },
-      {
-        $push: {
-          usersDisliked: userId,
-        },
-        $inc: {
-          dislikes: +1,
-        },
-      }
-    )
-      .then(() => {
-        res.status(200).json({
-          message: "Dislike ajouté !",
-        });
-      })
-      .catch((error) =>
-        res.status(400).json({
-          error,
-        })
-      );
-  }
-  if (like === 0) {
-    Sauce.findOne({
-      _id: sauceId,
-    })
+  if (req.body.like == 0) {
+    ModelsSauce.findOne({ _id: req.params.id })
       .then((sauce) => {
-        if (sauce.usersLiked.includes(userId)) {
-          Sauce.updateOne(
-            {
-              _id: sauceId,
-            },
-            {
-              $pull: {
-                usersLiked: userId,
-              },
-              $inc: {
-                likes: -1,
-              },
-            }
+        if (sauce.usersLiked.includes(req.body.userId)) {
+          ModelsSauce.updateOne(
+            { _id: req.params.id },
+            { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } }
           )
             .then(() =>
-              res.status(200).json({
-                message: "Like retiré !",
-              })
+              res.status(200).json({ message: "cette sauce n'est plus aimée" })
             )
-            .catch((error) =>
-              res.status(400).json({
-                error,
-              })
-            );
+            .catch((error) => res.status(400).json({ error }));
         }
-        if (sauce.usersDisliked.includes(userId)) {
-          Sauce.updateOne(
+        if (sauce.usersDisliked.includes(req.body.userId)) {
+          ModelsSauce.updateOne(
+            { _id: req.params.id },
             {
-              _id: sauceId,
-            },
-            {
-              $pull: {
-                usersDisliked: userId,
-              },
-              $inc: {
-                dislikes: -1,
-              },
+              $pull: { usersDisliked: req.body.userId },
+              $inc: { dislikes: -1 },
             }
           )
             .then(() =>
-              res.status(200).json({
-                message: "Dislike retiré !",
-              })
+              res.status(200).json({ message: "cette sauce n'est plus aimée" })
             )
-            .catch((error) =>
-              res.status(400).json({
-                error,
-              })
-            );
+            .catch((error) => res.status(400).json({ error }));
         }
       })
-      .catch((error) =>
-        res.status(404).json({
-          error,
-        })
-      );
+      .catch((error) => res.status(400).json({ error }));
   }
+
+  if (req.body.like == -1) {
+    ModelsSauce.updateOne(
+      { _id: req.params.id },
+      { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } }
+    )
+      .then(() => res.status(200).json({ message: "dislike sauce" }))
+      .catch((error) => res.status(400).json({ error }));
+    console.log("Sauce dislike");
+  }
+  console.log(req.body);
 };
