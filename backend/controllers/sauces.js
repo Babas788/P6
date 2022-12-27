@@ -126,7 +126,7 @@ exports.likeDislikeSauces = (req, res, next) => {
         }
       )
         .then(() =>
-          res.status(200).json({ message: "Vous avez disliké la sauce ! :(" })
+          res.status(200).json({ message: "Vous avez disliké la sauce !" })
         )
         .catch((error) => res.status(400).json({ error }));
     } else {
@@ -141,7 +141,7 @@ exports.likeDislikeSauces = (req, res, next) => {
           }
         )
           .then(() =>
-            res.status(200).json({ message: "Vous avez disliké la sauce ! :(" })
+            res.status(200).json({ message: "Vous avez disliké la sauce !" })
           )
           .catch((error) => res.status(400).json({ error }));
       } else if (sauce.usersDisliked.includes(req.body.userId)) {
