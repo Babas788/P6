@@ -54,15 +54,11 @@ exports.modifySauce = async (req, res, next) => {
           }`,
         }
       : { ...req.body };
-
-    delete sauceObject._userId;
-    const unitSauce = Sauce.findOne({ _id: req.params.id });
-    if (unitSauce.userId != req.auth.userId) {
-      res.status(401).json({ message: "Not authorized" });
-    } else {
-      Sauce.updateOne({ ...sauceObject, _id: req.params.id });
-      res.status(200).json({ message: "Objet modifié!" });
-    }
+    Sauce.updateOne(
+      { _id: req.params.id },
+      { ...sauceObject, _id: req.params.id }
+    );
+    res.status(200).json({ message: "Objet modifié !" });
   } catch (error) {
     res.status(400).json({ error });
   }
