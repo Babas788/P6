@@ -2,13 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 const app = express();
-
+const dotenv = require("dotenv");
+dotenv.config();
 app.use(express.json());
 
 const userRoutes = require("./routes/user");
 const saucesRoutes = require("./routes/sauces");
-
-const password = "SWLs5mITxW3XxykN";
+const password = process.env.S3_BUCKET;
 
 mongoose
   .connect(
